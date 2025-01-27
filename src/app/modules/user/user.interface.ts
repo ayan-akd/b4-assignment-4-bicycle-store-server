@@ -9,7 +9,7 @@ export type TUser = {
   email: string;
   passwordChangedAt?: Date;
   needsPasswordChange: boolean;
-  role: 'admin' | 'user';
+  role: 'admin' | 'customer';
   status: 'active' | 'blocked';
   isDeleted: boolean;
 };

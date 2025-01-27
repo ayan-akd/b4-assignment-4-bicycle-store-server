@@ -10,7 +10,7 @@ const userValidationSchema = z.object({
 const createUserValidationSchema = z.object({
   body: z.object({
     password: userValidationSchema.shape.password,
-    role: z.enum(['admin', 'user']),
+    role: z.enum(['admin', 'customer']),
     name: z.string({
       required_error: 'Name is required',
     }),

@@ -10,7 +10,7 @@ const createOrderIntoDB = async (order: TOrder) => {
   const bicycleExists = await BicycleModel.isBicycleExists(
     order.product as unknown as string,
   );
-  
+
   if (!bicycleExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Bicycle not found');
   }
@@ -117,7 +117,21 @@ const calculateTotalRevenue = async () => {
   }
 };
 
+const getAllOrdersFromDB = async () => {
+  const result = await OrderModel.find({}).populate('user').populate('product');
+  return result;
+};
+
+const getMyOrdersFromDB = async (userId: string) => {
+  const result = await OrderModel.find({ user: userId })
+    .populate('user')
+    .populate('product');
+  return result;
+};
+
 export const OrderService = {
   createOrderIntoDB,
   calculateTotalRevenue,
+  getAllOrdersFromDB,
+  getMyOrdersFromDB,
 };

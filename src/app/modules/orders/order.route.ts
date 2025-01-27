@@ -9,13 +9,18 @@ const router = express.Router();
 
 router.post(
   '/orders',
-  auth(USER_ROLE.user, USER_ROLE.admin),
+  auth(USER_ROLE.customer, USER_ROLE.admin),
   validateRequest(orderValidationSchema),
   OrderController.createOrder,
 );
 
 router.get('/orders/revenue', OrderController.orderRevenue);
 
-router.get('/orders');
+router.get('/orders', auth(USER_ROLE.admin), OrderController.getAllOrders);
+router.get(
+  '/orders/my-orders/:userId',
+  auth(USER_ROLE.customer, USER_ROLE.admin),
+  OrderController.getMyOrders,
+);
 
 export const OrderRoutes = router;

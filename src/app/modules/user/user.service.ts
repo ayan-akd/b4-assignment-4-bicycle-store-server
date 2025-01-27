@@ -28,8 +28,14 @@ const changeStatusIntoDB = async (id: string, payload: { status: string }) => {
   return result;
 };
 
+const getAllUsersFromDB = async () => {
+  const result = await UserModel.find({});
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   getMeFromDB,
   changeStatusIntoDB,
+  getAllUsersFromDB,
 };

@@ -43,8 +43,19 @@ const changeStatus = catchAsync(async (req, res) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await UserServices.getAllUsersFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Users are retrieved successfully',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getMe,
   changeStatus,
+  getAllUsers,
 };

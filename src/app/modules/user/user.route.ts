@@ -15,11 +15,13 @@ router.post(
 
 router.get(
   '/users/me',
-  auth(USER_ROLE.user, USER_ROLE.admin),
+  auth(USER_ROLE.customer, USER_ROLE.admin),
   UserControllers.getMe,
 );
 
-router.post(
+router.get('/users', auth(USER_ROLE.admin), UserControllers.getAllUsers);
+
+router.patch(
   '/users/change-status/:id',
   auth(USER_ROLE.admin),
   validateRequest(UserValidation.changeStatusValidationSchema),

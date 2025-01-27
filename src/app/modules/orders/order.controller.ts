@@ -24,7 +24,29 @@ const orderRevenue = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllOrders = catchAsync(async (req: Request, res: Response) => {
+  const result = await OrderService.getAllOrdersFromDB();
+  res.status(200).json({
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: result,
+  });
+});
+
+const getMyOrders = catchAsync(async (req: Request, res: Response) => {
+  //use params  
+  const userId = req.params.userId;
+  const result = await OrderService.getMyOrdersFromDB(userId);
+  res.status(200).json({
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   orderRevenue,
+  getAllOrders,
+  getMyOrders,
 };

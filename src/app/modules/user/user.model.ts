@@ -35,7 +35,7 @@ const userSchema = new Schema<TUser, IUser>(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['customer', 'admin'],
     },
     status: {
       type: String,
