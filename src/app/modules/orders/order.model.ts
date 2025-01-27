@@ -3,7 +3,7 @@ import { TOrder } from './order.interface';
 
 const orderSchema = new Schema<TOrder>(
   {
-    id: {
+    orderId: {
       type: String,
       unique: true,
     },

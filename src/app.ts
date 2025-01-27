@@ -24,8 +24,8 @@ app.use(
 
 app.use('/api', BicycleRoutes);
 app.use('/api', OrderRoutes);
-app.use('/api/', AuthRoutes);
-app.use('/api/', UserRoutes);
+app.use('/api', AuthRoutes);
+app.use('/api', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Server Is Running');

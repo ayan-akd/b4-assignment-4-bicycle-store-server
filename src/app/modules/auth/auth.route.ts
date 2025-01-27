@@ -8,20 +8,20 @@ import { USER_ROLE } from '../user/user.constant';
 const router = express.Router();
 
 router.post(
-  '/login',
+  '/auth/login',
   validateRequest(AuthValidation.loginValidationSchema),
   AuthControllers.loginUser,
 );
 
 router.post(
-  '/change-password',
-  auth(USER_ROLE.admin, USER_ROLE.customer),
+  '/auth/change-password',
+  auth(USER_ROLE.admin, USER_ROLE.user),
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
 );
 
 router.post(
-  '/refresh-token',
+  '/auth/refresh-token',
   validateRequest(AuthValidation.refreshTokenValidationSchema),
   AuthControllers.refreshToken,
 );

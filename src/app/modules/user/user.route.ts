@@ -8,19 +8,19 @@ import auth from '../../middlewares/auth';
 const router = express.Router();
 
 router.post(
-  'users/create-user',
+  '/users/create-user',
   validateRequest(UserValidation.createUserValidationSchema),
   UserControllers.createUser,
 );
 
 router.get(
-  'users/me',
-  auth(USER_ROLE.customer, USER_ROLE.admin),
+  '/users/me',
+  auth(USER_ROLE.user, USER_ROLE.admin),
   UserControllers.getMe,
 );
 
 router.post(
-  'users/change-status/:id',
+  '/users/change-status/:id',
   auth(USER_ROLE.admin),
   validateRequest(UserValidation.changeStatusValidationSchema),
   UserControllers.changeStatus,

@@ -47,7 +47,7 @@ const createOrderIntoDB = async (order: TOrder) => {
     // generate order id
     const orderId = await generateOrderId();
 
-    order.id = orderId;
+    order.orderId = orderId;
 
     const newOrder = await OrderModel.create([order], { session });
 
