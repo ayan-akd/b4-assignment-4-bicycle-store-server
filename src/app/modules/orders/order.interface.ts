@@ -6,12 +6,5 @@ export type TOrder = {
   product: Types.ObjectId;
   quantity: number;
   totalPrice: number;
-  status?:
-    | 'pending'
-    | 'shipped'
-    | 'delivered'
-    | 'cancelled'
-    | 'processing'
-    | 'completed'
-    | 'refunded';
+  address?: string;
 };

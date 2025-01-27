@@ -27,9 +27,9 @@ export const orderValidationSchema = z.object({
       })
       .positive('Total Price must be a positive number'),
 
-    image: z.string({
-      required_error: 'Image is required',
-      invalid_type_error: 'Image must be a string',
+    address: z.string({
+      required_error: 'Address is required',
+      invalid_type_error: 'Address must be a string',
     }),
   }),
 });

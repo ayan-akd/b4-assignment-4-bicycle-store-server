@@ -17,6 +17,10 @@ const orderSchema = new Schema<TOrder>(
       ref: 'Bicycle',
       required: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
     quantity: {
       type: Number,
       required: true,
@@ -24,19 +28,6 @@ const orderSchema = new Schema<TOrder>(
     totalPrice: {
       type: Number,
       required: true,
-    },
-    status: {
-      type: String,
-      enum: [
-        'pending',
-        'shipped',
-        'delivered',
-        'cancelled',
-        'processing',
-        'completed',
-        'refunded',
-      ],
-      default: 'pending',
     },
   },
   {

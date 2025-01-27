@@ -10,6 +10,7 @@ const createOrderIntoDB = async (order: TOrder) => {
   const bicycleExists = await BicycleModel.isBicycleExists(
     order.product as unknown as string,
   );
+  
   if (!bicycleExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Bicycle not found');
   }
@@ -45,9 +46,7 @@ const createOrderIntoDB = async (order: TOrder) => {
 
     // second session to create order
     // generate order id
-    const orderId = await generateOrderId();
-
-    order.orderId = orderId;
+    order.orderId = await generateOrderId();
 
     const newOrder = await OrderModel.create([order], { session });
 
