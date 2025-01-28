@@ -65,14 +65,14 @@ const createOrderIntoDB = async (order: TOrder, client_ip: string) => {
     //payment integration
 
     const shurjopayPayload = {
-      amount: newOrder[0].totalPrice,
-      order_id: newOrder[0].orderId,
-      currency: 'USD',
+      amount: newOrder[0]?.totalPrice,
+      order_id: newOrder[0]?.orderId,
+      currency: 'BDT',
       customer_name: user?.name,
       customer_address: newOrder[0]?.address,
       customer_email: user?.email,
-      customer_phone: 'N/a',
-      customer_city: 'N/a',
+      customer_phone: 'N/A',
+      customer_city: 'N/A',
       client_ip,
     };
 
@@ -134,11 +134,6 @@ const verifyPayment = async (paymentId: string) => {
     );
   }
 
-  await OrderModel.findOneAndUpdate(
-    { paymentId },
-    { status: 'paid' },
-    { new: true },
-  );
   return payment;
 };
 
@@ -204,6 +199,42 @@ const getMyOrdersFromDB = async (userId: string) => {
   return result;
 };
 const changeOrderStatus = async (id: string, payload: { status: string }) => {
+  // const result = await OrderModel.findByIdAndUpdate(id, payload, { new: true });
+  // return result;
+  const orderExists = await OrderModel.findById(id);
+  if (!orderExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  if (
+    orderExists.status === 'paid' ||
+    orderExists.status === 'delivered' ||
+    orderExists.status == 'shipped'
+  ) {
+    if (payload.status === 'pending' || payload.status === 'cancelled') {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Order already ${orderExists.status}`,
+      );
+    }
+  }
+
+  if (orderExists.status === 'shipped') {
+    if (payload.status !== 'delivered') {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Order already ${orderExists.status}`,
+      );
+    }
+  }
+
+  if (orderExists.status === 'delivered') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Order already ${orderExists.status}`,
+    );
+  }
+
   const result = await OrderModel.findByIdAndUpdate(id, payload, { new: true });
   return result;
 };
