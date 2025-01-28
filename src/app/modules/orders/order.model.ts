@@ -31,12 +31,31 @@ const orderSchema = new Schema<TOrder>(
     },
     status: {
       type: String,
-      enum: ['pending', 'shipped', 'delivered', 'cancelled', 'processing'],
+      enum: ['pending', 'shipped', 'delivered', 'cancelled', 'paid'],
       default: 'pending',
     },
-    paymentId: {
-      type: String,
-      default: '',
+    transaction: {
+      paymentId: {
+        type: String,
+      },
+      transactionStatus: {
+        type: String,
+      },
+      bank_status: {
+        type: String,
+      },
+      sp_code: {
+        type: String,
+      },
+      sp_message: {
+        type: String,
+      },
+      method: {
+        type: String,
+      },
+      date_time: {
+        type: String,
+      },
     },
   },
   {

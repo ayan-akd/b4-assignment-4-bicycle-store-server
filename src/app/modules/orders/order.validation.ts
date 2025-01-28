@@ -40,7 +40,7 @@ export const orderStatusValidationSchema = z.object({
       'pending',
       'shipped',
       'delivered',
-      'processing',
+      'paid',
       'cancelled',
     ]),
   }),

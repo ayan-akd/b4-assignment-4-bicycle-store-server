@@ -6,7 +6,7 @@ import catchAsync from '../../utils/catchAsync';
 // create order
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const orderData = req.body;
-  const result = await OrderService.createOrderIntoDB(orderData);
+  const result = await OrderService.createOrderIntoDB(orderData, req.ip!);
   res.status(200).json({
     success: true,
     message: 'Order created successfully',
@@ -54,10 +54,21 @@ const changeOrderStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const verifyPayment = catchAsync(async (req: Request, res: Response) => {
+  const { paymentId } = req.params;
+  const result = await OrderService.verifyPayment(paymentId);
+  res.status(200).json({
+    success: true,
+    message: 'Payment verified successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   orderRevenue,
   getAllOrders,
   getMyOrders,
   changeOrderStatus,
+  verifyPayment,
 };

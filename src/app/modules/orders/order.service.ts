@@ -5,8 +5,10 @@ import { TOrder } from './order.interface';
 import { OrderModel } from './order.model';
 import mongoose from 'mongoose';
 import { generateOrderId } from '../../utils/generateID';
+import { UserModel } from '../user/user.model';
+import { orderUtils } from './order.utils';
 
-const createOrderIntoDB = async (order: TOrder) => {
+const createOrderIntoDB = async (order: TOrder, client_ip: string) => {
   const bicycleExists = await BicycleModel.isBicycleExists(
     order.product as unknown as string,
   );
@@ -57,7 +59,45 @@ const createOrderIntoDB = async (order: TOrder) => {
     await session.commitTransaction();
     await session.endSession();
 
-    return newOrder[0];
+    //get user
+    const user = await UserModel.findById(newOrder[0].user);
+
+    //payment integration
+
+    const shurjopayPayload = {
+      amount: newOrder[0].totalPrice,
+      order_id: newOrder[0].orderId,
+      currency: 'BDT',
+      customer_name: user?.name,
+      customer_address: newOrder[0]?.address,
+      customer_email: user?.email,
+      customer_phone: 'N/a',
+      customer_city: 'N/a',
+      client_ip,
+    };
+
+    const payment = await orderUtils.makePayment(shurjopayPayload);
+
+    if (payment?.transactionStatus) {
+      await OrderModel.updateOne(
+        { _id: newOrder[0]._id },
+        {
+          $set: {
+            transaction: {
+              paymentId: payment.sp_order_id,
+              transactionStatus: payment.transactionStatus,
+            },
+          },
+        },
+      );
+    }
+
+    const updatedOrder = await OrderModel.findById(newOrder[0]._id);
+
+    return {
+      order: updatedOrder,
+      payment,
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
@@ -65,6 +105,41 @@ const createOrderIntoDB = async (order: TOrder) => {
     await session.endSession();
     throw new Error(err);
   }
+};
+
+const verifyPayment = async (paymentId: string) => {
+  const payment = await orderUtils.verifyPayment(paymentId);
+
+  if (payment.length) {
+    await OrderModel.findOneAndUpdate(
+      {
+        'transaction.paymentId': paymentId,
+      },
+      {
+        'transaction.bank_status': payment[0].bank_status,
+        'transaction.sp_code': payment[0].sp_code,
+        'transaction.sp_message': payment[0].sp_message,
+        'transaction.method': payment[0].method,
+        'transaction.date_time': payment[0].date_time,
+        'transaction.transactionStatus': payment[0].transaction_status,
+        status:
+          payment[0].bank_status == 'Success'
+            ? 'paid'
+            : payment[0].bank_status == 'Failed'
+              ? 'pending'
+              : payment[0].bank_status == 'Cancel'
+                ? 'cancelled'
+                : '',
+      },
+    );
+  }
+
+  await OrderModel.findOneAndUpdate(
+    { paymentId },
+    { status: 'paid' },
+    { new: true },
+  );
+  return payment;
 };
 
 const calculateTotalRevenue = async () => {
@@ -139,4 +214,5 @@ export const OrderService = {
   getAllOrdersFromDB,
   getMyOrdersFromDB,
   changeOrderStatus,
+  verifyPayment,
 };

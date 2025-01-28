@@ -1,7 +1,10 @@
 import express from 'express';
 import { OrderController } from './order.controller';
 import validateRequest from '../../middlewares/validateRequest';
-import { orderStatusValidationSchema, orderValidationSchema } from './order.validation';
+import {
+  orderStatusValidationSchema,
+  orderValidationSchema,
+} from './order.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 
@@ -23,6 +26,10 @@ router.get(
   OrderController.getMyOrders,
 );
 
+router.get(
+  '/verify/:paymentId',
+  OrderController.verifyPayment,
+);
 router.patch(
   '/orders/change-status/:id',
   auth(USER_ROLE.admin),
