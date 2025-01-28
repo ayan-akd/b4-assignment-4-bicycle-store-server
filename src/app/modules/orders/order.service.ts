@@ -67,7 +67,7 @@ const createOrderIntoDB = async (order: TOrder, client_ip: string) => {
     const shurjopayPayload = {
       amount: newOrder[0].totalPrice,
       order_id: newOrder[0].orderId,
-      currency: 'BDT',
+      currency: 'USD',
       customer_name: user?.name,
       customer_address: newOrder[0]?.address,
       customer_email: user?.email,
