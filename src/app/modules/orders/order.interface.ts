@@ -7,4 +7,6 @@ export type TOrder = {
   quantity: number;
   totalPrice: number;
   address?: string;
+  status?: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'processing';
+  paymentId?: string;
 };

@@ -128,10 +128,15 @@ const getMyOrdersFromDB = async (userId: string) => {
     .populate('product');
   return result;
 };
+const changeOrderStatus = async (id: string, payload: { status: string }) => {
+  const result = await OrderModel.findByIdAndUpdate(id, payload, { new: true });
+  return result;
+};
 
 export const OrderService = {
   createOrderIntoDB,
   calculateTotalRevenue,
   getAllOrdersFromDB,
   getMyOrdersFromDB,
+  changeOrderStatus,
 };
