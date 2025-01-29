@@ -2,6 +2,7 @@
 import { TUser } from './user.interface';
 import { UserModel } from './user.model';
 import { generateUserId } from '../../utils/generateID';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 // create teacher into db
 const createUserIntoDB = async (payload: Partial<TUser>) => {
@@ -28,9 +29,18 @@ const changeStatusIntoDB = async (id: string, payload: { status: string }) => {
   return result;
 };
 
-const getAllUsersFromDB = async () => {
-  const result = await UserModel.find({});
-  return result;
+const getAllUsersFromDB = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(UserModel.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const data = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+  return {
+    data,
+    meta,
+  };
 };
 
 export const UserServices = {

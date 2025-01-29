@@ -6,6 +6,7 @@ import { OrderModel } from './order.model';
 import { generateOrderId } from '../../utils/generateID';
 import { UserModel } from '../user/user.model';
 import { orderUtils } from './order.utils';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createOrderIntoDB = async (order: TOrder, client_ip: string) => {
   const bicycleExists = await BicycleModel.isBicycleExists(
@@ -156,7 +157,7 @@ const createOrderIntoDB = async (order: TOrder, client_ip: string) => {
       order: updatedOrder,
       payment,
     };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     throw new Error(err);
   }
@@ -203,7 +204,8 @@ const verifyPayment = async (paymentId: string) => {
     }
 
     const bicycleExists = await BicycleModel.isBicycleExists(
-      orderExists.product as unknown as string,);
+      orderExists.product as unknown as string,
+    );
 
     if (!bicycleExists) {
       throw new AppError(
@@ -225,7 +227,10 @@ const verifyPayment = async (paymentId: string) => {
     );
 
     if (!updatedBicycle) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update bicycle stock');
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to update bicycle stock',
+      );
     }
   }
 
@@ -282,9 +287,18 @@ const calculateTotalRevenue = async () => {
   }
 };
 
-const getAllOrdersFromDB = async () => {
-  const result = await OrderModel.find({}).populate('user').populate('product');
-  return result;
+const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
+  const orderQuery = new QueryBuilder(OrderModel.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const data = await orderQuery.modelQuery.populate('user').populate('product');
+  const meta = await orderQuery.countTotal();
+  return {
+    data,
+    meta,
+  };
 };
 
 const getMyOrdersFromDB = async (userId: string) => {

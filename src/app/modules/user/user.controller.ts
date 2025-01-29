@@ -44,12 +44,13 @@ const changeStatus = catchAsync(async (req, res) => {
 });
 
 const getAllUsers = catchAsync(async (req, res) => {
-  const result = await UserServices.getAllUsersFromDB();
+  const { data, meta } = await UserServices.getAllUsersFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Users are retrieved successfully',
-    data: result,
+    data,
+    meta,
   });
 });
 
