@@ -10,13 +10,6 @@ import { USER_ROLE } from '../user/user.constant';
 
 const router = express.Router();
 
-router.post(
-  '/orders',
-  auth(USER_ROLE.customer, USER_ROLE.admin),
-  validateRequest(orderValidationSchema),
-  OrderController.createOrder,
-);
-
 router.get('/orders/revenue', OrderController.orderRevenue);
 
 router.get('/orders', auth(USER_ROLE.admin), OrderController.getAllOrders);
@@ -26,10 +19,15 @@ router.get(
   OrderController.getMyOrders,
 );
 
-router.get(
-  '/verify/:paymentId',
-  OrderController.verifyPayment,
+router.get('/verify/:paymentId', OrderController.verifyPayment);
+
+router.post(
+  '/orders',
+  auth(USER_ROLE.customer, USER_ROLE.admin),
+  validateRequest(orderValidationSchema),
+  OrderController.createOrder,
 );
+
 router.patch(
   '/orders/change-status/:id',
   auth(USER_ROLE.admin),
