@@ -8,7 +8,7 @@ import httpStatus from 'http-status';
 const createBicycle = catchAsync(async (req, res) => {
   const bicycleData = req.body;
   const result = await BicycleService.createBicycleIntoDB(bicycleData);
-  
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -72,10 +72,21 @@ const deleteBicycle = catchAsync(async (req, res) => {
   });
 });
 
+const getBrands = catchAsync(async (req, res) => {
+  const result = await BicycleService.getBrandsFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Brands retrieved successfully',
+    data: result,
+  });
+});
+
 export const BicycleController = {
   createBicycle,
   getAllBicycles,
   getSingleBicycle,
   updateBicycle,
   deleteBicycle,
+  getBrands,
 };

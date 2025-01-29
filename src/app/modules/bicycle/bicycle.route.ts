@@ -12,6 +12,10 @@ const router = express.Router();
 
 router.get('/products', BicycleController.getAllBicycles);
 
+router.get('/products/:productId', BicycleController.getSingleBicycle);
+
+router.get('/brands', BicycleController.getBrands);
+
 router.post(
   '/products',
   auth(USER_ROLE.admin),
@@ -19,7 +23,7 @@ router.post(
   BicycleController.createBicycle,
 );
 
-router.get('/products/:productId', BicycleController.getSingleBicycle);
+
 
 router.patch(
   '/products/:productId',

@@ -214,8 +214,8 @@ const verifyPayment = async (paymentId: string) => {
 
     const remainingQuantity = bicycleExists.quantity - orderExists.quantity;
 
-    // update bike quantity (first transaction)
-    const updatedBike = await BicycleModel.findOneAndUpdate(
+    // update bicycle quantity (first transaction)
+    const updatedBicycle = await BicycleModel.findOneAndUpdate(
       { _id: orderExists.product },
       {
         quantity: remainingQuantity,
@@ -224,7 +224,7 @@ const verifyPayment = async (paymentId: string) => {
       { new: true },
     );
 
-    if (!updatedBike) {
+    if (!updatedBicycle) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update bicycle stock');
     }
   }
